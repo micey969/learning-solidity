@@ -52,8 +52,7 @@ contract SimpleToken {
         require(balances[_to] + numTokens >= balances[_to]);  
         balances[this] -= numTokens;                    
         balances[_to] += numTokens;
-        update(numTokens);  
-        /*N.B- update here doesn't work for some reason, but the function works on it's own */                        
+        update(numTokens);   
     }
      
 
@@ -62,7 +61,6 @@ contract SimpleToken {
     //  -Checks if there is enough money to buy
     //  -Puts a limit on tokens bought in one transaction
     //  -Calculates change if there is an an excess
-    //  -Double token value after each tranaction
     //  -Returns the amount of token to transfer
     // ------------------------------------------------------------------------
     function calculate() internal returns (uint256) {
@@ -72,7 +70,6 @@ contract SimpleToken {
         if (numTokens > 5){   
             numTokens = 5;
         }
-        cost *= 2; 
         return numTokens;
     }
      
@@ -82,11 +79,13 @@ contract SimpleToken {
     //  -Get Ether amount
     //  -Transfer Ether amount to owner
     //  -Any remaining deposited amount stays in deposit
+    //  -Double token value after each tranaction
     // ------------------------------------------------------------------------
-    function update(uint256 numTokens) public{
+    function update(uint256 numTokens) public {
         uint256 price = (cost * numTokens);
         deposits[msg.sender] -= price;
         owner.transfer(price);
+        cost *= 2;
     }   
     
 
